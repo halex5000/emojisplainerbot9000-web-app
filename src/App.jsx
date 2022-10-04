@@ -88,6 +88,7 @@ function MyApp() {
 		async function fetchData() {
 			try {
 				if (emoji) {
+					console.log('segment id', segmentId);
 					const response = await axios({
 						baseURL: import.meta.env.VITE_API_URL,
 						url: import.meta.env.VITE_API_PATH,
