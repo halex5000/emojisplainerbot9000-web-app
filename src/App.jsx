@@ -134,6 +134,7 @@ function MyApp() {
 
 	return (
 		<>
+			<Toggler />
 			<Popover
 				open={pickerOpen}
 				id={id}
@@ -211,7 +212,7 @@ function MyApp() {
 						<CardContent>
 							<CardMedia
 								component="img"
-								height="200"
+								height="300"
 								image="/noun-smiley-struck-out-tongue-1735782-E6E6E6.png"
 								alt="emojisplainer bot 9000"
 							/>
@@ -252,7 +253,6 @@ function MyApp() {
 					) : null}
 				</Grid>
 			</Grid>
-			<Toggler />
 		</>
 	);
 }
