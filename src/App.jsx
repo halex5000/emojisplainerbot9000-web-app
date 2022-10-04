@@ -87,8 +87,7 @@ function MyApp() {
 		// Do the thing to get the emoji title and usage here
 		async function fetchData() {
 			const response = await axios({
-				baseURL:
-					'https://wz3soblsse.execute-api.us-east-2.amazonaws.com/default',
+				baseURL: import.meta.env.VITE_API_URL,
 				url: 'emojisplainer-lookup-bot',
 				params: {
 					emoji,
