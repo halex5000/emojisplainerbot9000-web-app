@@ -87,18 +87,20 @@ function MyApp() {
 		// Do the thing to get the emoji title and usage here
 		async function fetchData() {
 			try {
-				const response = await axios({
-					baseURL: import.meta.env.VITE_API_URL,
-					url: 'emojisplainer-lookup-bot',
-					params: {
-						emoji,
-						segmentId,
-					},
-				});
+				if (emoji) {
+					const response = await axios({
+						baseURL: import.meta.env.VITE_API_URL,
+						url: import.meta.env.VITE_API_PATH,
+						params: {
+							emoji,
+							segmentId,
+						},
+					});
 
-				if (response.data) {
-					setEmojiTitle(response.data.emojiTitle);
-					setEmojiUsage(response.data.emojiUsage);
+					if (response.data) {
+						setEmojiTitle(response.data.emojiTitle);
+						setEmojiUsage(response.data.emojiUsage);
+					}
 				}
 			} catch (error) {
 				console.error(error);
@@ -196,7 +198,6 @@ function MyApp() {
 						</ToggleButton>
 					</ToggleButtonGroup>
 					<Card
-						centered
 						disabled
 						sx={{
 							width: 1,
@@ -209,7 +210,7 @@ function MyApp() {
 						<CardContent>
 							<CardMedia
 								component="img"
-								Height="200"
+								height="200"
 								image="/noun-smiley-struck-out-tongue-1735782-E6E6E6.png"
 								alt="emojisplainer bot 9000"
 							/>
