@@ -91,6 +91,7 @@ function MyApp() {
 				url: 'emojisplainer-lookup-bot',
 				params: {
 					emoji,
+					segmentId,
 				},
 			});
 
