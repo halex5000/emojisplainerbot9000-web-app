@@ -86,18 +86,22 @@ function MyApp() {
 	React.useEffect(() => {
 		// Do the thing to get the emoji title and usage here
 		async function fetchData() {
-			const response = await axios({
-				baseURL: import.meta.env.VITE_API_URL,
-				url: 'emojisplainer-lookup-bot',
-				params: {
-					emoji,
-					segmentId,
-				},
-			});
+			try {
+				const response = await axios({
+					baseURL: import.meta.env.VITE_API_URL,
+					url: 'emojisplainer-lookup-bot',
+					params: {
+						emoji,
+						segmentId,
+					},
+				});
 
-			if (response.data) {
-				setEmojiTitle(response.data.emojiTitle);
-				setEmojiUsage(response.data.emojiUsage);
+				if (response.data) {
+					setEmojiTitle(response.data.emojiTitle);
+					setEmojiUsage(response.data.emojiUsage);
+				}
+			} catch (error) {
+				console.error(error);
 			}
 		}
 
