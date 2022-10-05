@@ -159,7 +159,7 @@ function MyApp({login, userKey}) {
 		}
 
 		fetchData();
-	}, [emoji]);
+	}, [emoji, userKey]);
 
 	const [anchorElement, setAnchorElement] = React.useState();
 	const open = Boolean(anchorElement);
