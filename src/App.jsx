@@ -14,6 +14,7 @@ import {useFlags, useLDClient} from 'launchdarkly-react-client-sdk';
 import PropTypes from 'prop-types';
 import stringHash from 'string-hash';
 import {useDeviceData} from 'react-device-detect';
+import store from 'store2';
 
 import {
 	Card,
@@ -26,6 +27,7 @@ import {
 	Button,
 	Tooltip,
 	TextField,
+	ButtonGroup,
 } from '@mui/material';
 
 const ColorModeContext = React.createContext({toggleColorMode() {}});
@@ -37,11 +39,17 @@ const randomNumberGenerator = () => {
 function Toggler({login, userKey}) {
 	const theme = useTheme();
 
+	console.log('user key in toggler', userKey);
+
 	const [temporaryPhoneNumber, setTemporaryPhoneNumber] = React.useState(
 		`+1${randomNumberGenerator()}1`,
 	);
 	const [isChangingPhoneNumber, setIsChangingPhoneNumber] =
 		React.useState('false');
+
+	const toggleIsChangingPhoneNumber = () => {
+		setIsChangingPhoneNumber(!isChangingPhoneNumber);
+	};
 
 	const colorMode = React.useContext(ColorModeContext);
 
@@ -60,7 +68,7 @@ function Toggler({login, userKey}) {
 			<Toolbar color="inherit">
 				{darkMode ? (
 					<IconButton
-						sx={{ml: 1}}
+						sx={{ml: 1, paddingRight: 2}}
 						color="inherit"
 						onClick={colorMode.toggleColorMode}
 					>
@@ -71,16 +79,14 @@ function Toggler({login, userKey}) {
 						)}
 					</IconButton>
 				) : null}
-				{!isChangingPhoneNumber && userKey ? (
+				{userKey && isChangingPhoneNumber ? (
 					<>
 						<Typography>{userKey}</Typography>
 						<Button
 							variant="contained"
 							color="secondary"
 							sx={{margin: 2}}
-							onClick={() => {
-								setIsChangingPhoneNumber(true);
-							}}
+							onClick={toggleIsChangingPhoneNumber}
 						>
 							Change User Key
 						</Button>
@@ -92,20 +98,24 @@ function Toggler({login, userKey}) {
 							id="phoneNumber"
 							label="Telephone Number"
 							value={temporaryPhoneNumber}
-							helperText="Starts as randomly assigned number"
+							helperText="a random phone number"
 							onChange={phoneNumberChange}
 						/>
-						<Button
-							variant="contained"
-							color="secondary"
-							sx={{margin: 2}}
-							onClick={() => {
-								login(temporaryPhoneNumber);
-								setIsChangingPhoneNumber(false);
-							}}
+						<ButtonGroup
+							sx={{paddingLeft: 2}}
+							orientation="vertical"
+							aria-label="vertical outlined button group"
 						>
-							Save
-						</Button>
+							<Button
+								onClick={() => {
+									login(temporaryPhoneNumber);
+									setIsChangingPhoneNumber(true);
+								}}
+							>
+								Save
+							</Button>
+							<Button onClick={toggleIsChangingPhoneNumber}>Cancel</Button>
+						</ButtonGroup>
 					</>
 				)}
 			</Toolbar>
@@ -115,7 +125,7 @@ function Toggler({login, userKey}) {
 
 Toggler.propTypes = {
 	login: PropTypes.func,
-	userKey: PropTypes.string,
+	userKey: PropTypes.number,
 };
 
 function MyApp({login, userKey}) {
@@ -275,27 +285,28 @@ function MyApp({login, userKey}) {
 
 MyApp.propTypes = {
 	login: PropTypes.func,
-	userKey: PropTypes.string,
+	userKey: PropTypes.number,
 };
 
 export default function ToggleColorMode() {
 	const [mode, setMode] = React.useState('light');
 
 	const launchDarklyClient = useLDClient();
-	const [userKey, setUserKey] = React.useState();
+
+	const hasUserKey = store.has('userKey');
+	const [userKey, setUserKey] = React.useState(
+		hasUserKey ? store.get('userKey') : null,
+	);
+
 	const [phoneNumber, setPhoneNumber] = React.useState();
 	const deviceData = useDeviceData();
-
-	console.log(deviceData);
-
-	// Const [item, setItem] = useLocalStorage('name', 'Initial Value');
 
 	React.useEffect(() => {
 		if (phoneNumber) {
 			setUserKey(`${stringHash(phoneNumber)}${phoneNumber.slice(-1)}`);
 		}
 
-		if (userKey) {
+		if (userKey && launchDarklyClient) {
 			launchDarklyClient.identify({
 				key: userKey,
 				custom: {
@@ -304,6 +315,7 @@ export default function ToggleColorMode() {
 					osName: deviceData.os.name,
 				},
 			});
+			store.set('userKey', userKey);
 		}
 	}, [userKey, phoneNumber, launchDarklyClient, deviceData]);
 
