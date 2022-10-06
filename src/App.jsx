@@ -135,6 +135,10 @@ function MyApp({login, userKey}) {
 	const [emojiUsage, setEmojiUsage] = React.useState();
 	const deviceData = useDeviceData();
 
+	console.log(deviceData.browser.name);
+	console.log(deviceData.os.name);
+	console.log(deviceData.device.model);
+
 	React.useEffect(() => {
 		// Do the thing to get the emoji title and usage here
 		async function fetchData() {
@@ -146,7 +150,7 @@ function MyApp({login, userKey}) {
 						params: {
 							emoji,
 							userKey,
-							browserName: deviceData.browser.Name,
+							browserName: deviceData.browser.name,
 							deviceName: deviceData.model,
 							osName: deviceData.os.name,
 						},
@@ -306,6 +310,10 @@ export default function ToggleColorMode() {
 	const [phoneNumber, setPhoneNumber] = React.useState();
 	const deviceData = useDeviceData();
 
+	console.log(deviceData.browser.name);
+	console.log(deviceData.os.name);
+	console.log(deviceData.model);
+
 	React.useEffect(() => {
 		if (phoneNumber) {
 			setUserKey(`${stringHash(phoneNumber)}${phoneNumber.slice(-1)}`);
@@ -315,7 +323,7 @@ export default function ToggleColorMode() {
 			launchDarklyClient.identify({
 				key: userKey,
 				custom: {
-					browserName: deviceData.browser.Name,
+					browserName: deviceData.browser.name,
 					deviceName: deviceData.model,
 					osName: deviceData.os.name,
 				},
