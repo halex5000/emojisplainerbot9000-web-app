@@ -133,6 +133,7 @@ function MyApp({login, userKey}) {
 	const [pickerOpen, setPickerOpen] = React.useState(false);
 	const [emojiTitle, setEmojiTitle] = React.useState();
 	const [emojiUsage, setEmojiUsage] = React.useState();
+	const deviceData = useDeviceData();
 
 	React.useEffect(() => {
 		// Do the thing to get the emoji title and usage here
@@ -145,6 +146,9 @@ function MyApp({login, userKey}) {
 						params: {
 							emoji,
 							userKey,
+							browserName: deviceData.browser.Name,
+							deviceName: deviceData.model,
+							osName: deviceData.os.name,
 						},
 					});
 
@@ -186,6 +190,7 @@ function MyApp({login, userKey}) {
 					horizontal: 'left',
 				}}
 				anchorEl={anchorElement}
+				sx={{paddingRight: 10}}
 				onClose={closePicker}
 			>
 				<Picker
